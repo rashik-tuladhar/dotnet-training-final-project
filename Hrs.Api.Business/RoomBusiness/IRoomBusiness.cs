@@ -9,4 +9,5 @@ public interface IRoomBusiness
     Task<ApiResponse<RoomDto>> GetRoomByIdAsync(int id);
     Task<ApiResponse<RoomDto>> CreateRoomAsync(CreateRoomDto roomDto);
     Task<ApiResponse<RoomDto>> UpdateRoomAsync(UpdateRoomDto roomDto);
+    Task<ApiResponse<RoomDto>> UpdateRoomStatusAsync(UpdateRoomDto updateRoomDto);
 }

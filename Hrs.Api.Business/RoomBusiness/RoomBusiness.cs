@@ -96,4 +96,17 @@ public class RoomBusiness(IUnitOfWork unitOfWork) : IRoomBusiness
         response.Success = true;
         return response;
     }
+
+    public async Task<ApiResponse<RoomDto>> UpdateRoomStatusAsync(UpdateRoomDto updateRoomDto)
+    {
+        ApiResponse<RoomDto> response = new ApiResponse<RoomDto>();
+        var repository = unitOfWork.Repository<Room>();
+        Room room = new Room()
+        {
+            IsAvailable = updateRoomDto.IsAvailable
+        };
+        repository.Update(room);
+        response.Success = true;
+        return response;
+    }
 }

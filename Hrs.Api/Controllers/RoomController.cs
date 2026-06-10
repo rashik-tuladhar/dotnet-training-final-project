@@ -41,4 +41,12 @@ public class RoomController(IRoomBusiness roomBusiness) : ControllerBase
         var updateResponse = await roomBusiness.UpdateRoomAsync(updateRoomDto);
         return Ok(updateResponse);
     }
+    
+    [HttpPatch]
+    [Route("update-room-status")]
+    public async Task<IActionResult> UpdateRoomStatus([FromBody] UpdateRoomDto updateRoomDto)
+    {
+        var updateResponse = await roomBusiness.UpdateRoomStatusAsync(updateRoomDto);
+        return Ok(updateResponse);
+    }
 }
