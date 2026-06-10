@@ -1,6 +1,8 @@
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Hrs.Api.Business.HotelBusiness;
 using Hrs.Api.Repository.Data;
+using Hrs.Api.Repository.HotelRepository;
 using Hrs.Api.Repository.RepositoryPattern;
 using Hrs.Api.Repository.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +42,8 @@ builder.Services.AddDbContext<HrsDbContext>(options =>
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IHotelBusiness, HotelBusiness>();
+builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 
 var app = builder.Build();
 
