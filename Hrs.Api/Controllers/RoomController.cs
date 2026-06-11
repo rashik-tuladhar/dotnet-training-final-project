@@ -20,7 +20,7 @@ public class RoomController(IRoomBusiness roomBusiness) : ControllerBase
     
     [HttpGet]
     [Route("get-room-details/{roomId}")]
-    public async Task<IActionResult> GetDetails([FromQuery] int roomId)
+    public async Task<IActionResult> GetDetails(int roomId)
     {
         var itemDetails = await roomBusiness.GetRoomByIdAsync(roomId);
         return Ok(itemDetails);

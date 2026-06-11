@@ -85,14 +85,36 @@ public class RoomBusiness(IUnitOfWork unitOfWork) : IRoomBusiness
     {
         ApiResponse<RoomDto> response = new ApiResponse<RoomDto>();
         var repository = unitOfWork.Repository<Room>();
-        Room room = new Room()
+        var room = await repository.GetByIdAsync(roomDto.Id);
+        if (room == null)
         {
-            RoomNumber = roomDto.RoomNumber,
-            Type = roomDto.Type,
-            PricePerNight = roomDto.PricePerNight,
-            IsAvailable = roomDto.IsAvailable
-        };
+            response.Success = false;
+            response.Message = "Room not found.";
+            return response;
+        }
+
+        // Restrict status change if active bookings exist
+        var bookingRepo = unitOfWork.Repository<Booking>();
+        var bookings = await bookingRepo.GetAllAsync();
+        var hasActiveBookings = bookings.Any(b => b.RoomId == roomDto.Id && 
+            (b.Status.Equals("Confirmed", StringComparison.OrdinalIgnoreCase) || 
+             b.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase)));
+
+        if (hasActiveBookings && room.IsAvailable != roomDto.IsAvailable)
+        {
+            response.Success = false;
+            response.Message = "Cannot change availability because this room has active reservations.";
+            return response;
+        }
+
+        room.HotelId = roomDto.HotelId;
+        room.RoomNumber = roomDto.RoomNumber;
+        room.Type = roomDto.Type;
+        room.PricePerNight = roomDto.PricePerNight;
+        room.IsAvailable = roomDto.IsAvailable;
+
         repository.Update(room);
+        await repository.SaveChangesAsync();
         response.Success = true;
         return response;
     }
@@ -101,11 +123,32 @@ public class RoomBusiness(IUnitOfWork unitOfWork) : IRoomBusiness
     {
         ApiResponse<RoomDto> response = new ApiResponse<RoomDto>();
         var repository = unitOfWork.Repository<Room>();
-        Room room = new Room()
+        var room = await repository.GetByIdAsync(updateRoomDto.Id);
+        if (room == null)
         {
-            IsAvailable = updateRoomDto.IsAvailable
-        };
+            response.Success = false;
+            response.Message = "Room not found.";
+            return response;
+        }
+
+        // Restrict status change if active bookings exist
+        var bookingRepo = unitOfWork.Repository<Booking>();
+        var bookings = await bookingRepo.GetAllAsync();
+        var hasActiveBookings = bookings.Any(b => b.RoomId == updateRoomDto.Id && 
+            (b.Status.Equals("Confirmed", StringComparison.OrdinalIgnoreCase) || 
+             b.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase)));
+
+        if (hasActiveBookings)
+        {
+            response.Success = false;
+            response.Message = "Cannot change availability because this room has active reservations.";
+            return response;
+        }
+
+        room.IsAvailable = updateRoomDto.IsAvailable;
+
         repository.Update(room);
+        await repository.SaveChangesAsync();
         response.Success = true;
         return response;
     }

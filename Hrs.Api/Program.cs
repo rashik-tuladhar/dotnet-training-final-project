@@ -1,7 +1,9 @@
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Hrs.Api.Business.BookingBusiness;
 using Hrs.Api.Business.HotelBusiness;
 using Hrs.Api.Business.RoomBusiness;
+using Hrs.Api.Repository.BookingRepository;
 using Hrs.Api.Repository.Data;
 using Hrs.Api.Repository.HotelRepository;
 using Hrs.Api.Repository.RepositoryPattern;
@@ -46,6 +48,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IHotelBusiness, HotelBusiness>();
 builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 builder.Services.AddScoped<IRoomBusiness, RoomBusiness>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IBookingBusiness, BookingBusiness>();
 
 var app = builder.Build();
 

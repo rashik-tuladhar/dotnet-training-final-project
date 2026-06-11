@@ -18,3 +18,9 @@ public class CreateBookingDto
     public DateTime CheckIn { get; set; }
     public DateTime CheckOut { get; set; }
 }
+
+public class UpdateBookingStatusDto
+{
+    public int Id { get; set; }
+    public string Status { get; set; } = string.Empty;
+}

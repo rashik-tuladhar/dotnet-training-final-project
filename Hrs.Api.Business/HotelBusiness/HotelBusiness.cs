@@ -79,13 +79,20 @@ public class HotelBusiness(IUnitOfWork unitOfWork, IHotelRepository hotelReposit
     {
         ApiResponse<HotelDto> response = new ApiResponse<HotelDto>();
         var repository = unitOfWork.Repository<Hotel>();
-        Hotel hotel = new Hotel()
+        var hotel = await repository.GetByIdAsync(hotelDto.Id);
+        if (hotel == null)
         {
-            Name = hotelDto.Name,
-            Location = hotelDto.Location,
-            StarRating = hotelDto.StarRating
-        };
+            response.Success = false;
+            response.Message = "Hotel not found.";
+            return response;
+        }
+        
+        hotel.Name = hotelDto.Name;
+        hotel.Location = hotelDto.Location;
+        hotel.StarRating = hotelDto.StarRating;
+        
         repository.Update(hotel);
+        await repository.SaveChangesAsync();
         response.Success = true;
         return response;
         
